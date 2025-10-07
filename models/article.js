@@ -14,7 +14,11 @@ const articleSchema = new mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Comment' 
         }
-    ]
+    ],
+    author: {
+        required: true,
+        type: mongoose.Schema.Types.ObjectId, ref: 'Author'
+    }
 })
 
 const articleModel = mongoose.model('Article', articleSchema);
