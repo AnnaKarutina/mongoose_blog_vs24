@@ -12,6 +12,9 @@ db();
 // Use article routes
 const articleRoutes = require('./routes/article');
 app.use('/', articleRoutes);
+// Use comment routes
+const commentRoutes = require('./routes/comment');
+app.use('/', commentRoutes);
 
 // Start the server
 app.listen(3027, () => {
