@@ -1,4 +1,5 @@
 const Article = require('../models/article');
+const Comment = require('../models/comment');
 
 class ArticleController {
     async create(req, res) {
@@ -17,7 +18,7 @@ class ArticleController {
 
     async getAll(req, res) {
         try {
-            const articles = await Article.find();
+            const articles = await Article.find().populate('comments');
             return res.status(200).json(articles);
         } catch (e) {
             console.log(e);
@@ -27,7 +28,7 @@ class ArticleController {
 
     async getOne(req, res) {
         try {
-            const article = await Article.findById(req.params.id);
+            const article = await Article.findById(req.params.id).populate('comments');
             return res.status(200).json(article);
         } catch (e) {
             console.log(e);
@@ -53,7 +54,33 @@ class ArticleController {
             console.log(e);
             return res.status(500).json(e);
         }
-    }    
+    } 
+    
+    async addCommentToArticle(req, res) {
+        try{
+            const id = req.params.id; 
+
+            const data = new Comment({
+                date: new Date(),
+                content: req.body.content,
+                article: id
+            })
+
+            const comment = await data.save()
+            const result = await Article.findByIdAndUpdate(
+                { _id: id }, 
+                { $push: { 
+                    comments: comment._id
+                    }
+                },
+                { new: true }
+            )
+
+            return res.status(200).json(result);
+        } catch(error) {
+        res.status(500).json({message: error})
+        }
+    }
 }
 
 module.exports = new ArticleController();

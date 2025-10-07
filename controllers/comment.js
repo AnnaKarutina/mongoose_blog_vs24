@@ -4,7 +4,8 @@ class CommentController {
     async create(req, res) {
         const newComment = new Comment({
             date: new Date(),
-            content: req.body.content
+            content: req.body.content,
+            article: req.body.article
         })
         try {
             const comment = await newComment.save();
@@ -17,7 +18,7 @@ class CommentController {
 
     async getAll(req, res) {
         try {
-            const comments = await Comment.find();
+            const comments = await Comment.find().populate('article');
             return res.status(200).json(comments);
         } catch (e) {
             console.log(e);
